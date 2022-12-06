@@ -7,11 +7,14 @@ Original file is located at
     https://colab.research.google.com/drive/1w_YyNjzqcgXd84ONkUOPR5derG6ZKLOa
 
 # Big Data and Iot Lab project
-## Youtube spam comment predictor
+## YouTube spam comment predictor
 ### Md. Abdullah Ibna Harun || Sec:A(54)
 ### ID: 193-15-13426 || Email: abdullah15-13426@diu.edu.bd
+Team name: Single Source
 
-# Import modules & dataset
+#Data Collection
+
+### Import modules & dataset
 """
 
 !apt-get update
@@ -54,7 +57,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-"""# Data Input and Processing"""
+"""### Data Input and Processing"""
 
 from google.colab import files
 
@@ -149,11 +152,20 @@ box_plot_data = [value1, value2, value3, value4, value5]
 plt.boxplot(box_plot_data,patch_artist=True,labels = ['Psy' , 'KatyPerry','LMFAO','Eminem','Shakira'])
 plt.show()
 
-"""## Data Merge"""
+"""#  Pre-processing
+
+### Data Merge
+"""
 
 df1.show(6)
 
-print(df1.count(), len(df1.columns))
+#printing total datasets
+print("Comments               Columns ")
+print("Dataframe 1 - ",df1.count(),"    ", len(df1.columns))
+print("Dataframe 2 - ",df2.count(),"    ", len(df2.columns))
+print("Dataframe 3 - ",df3.count(),"    ", len(df3.columns))
+print("Dataframe 4 - ",df4.count(),"    ", len(df4.columns))
+print("Dataframe 5 - ",df5.count(),"    ", len(df5.columns))
 
 df1.printSchema()
 
@@ -168,7 +180,7 @@ print(df_mearged)
 
 df_mearged.drop('COMMENT_ID','AUTHOR','DATE').show()
 
-"""# Null Remove And Merge Data Save"""
+"""### Null Remove And Save Merged Dataset """
 
 # Get row count
 rows = df_mearged.count()
@@ -181,7 +193,7 @@ frames =frames.dropna()
 frames.shape
 
 # checking for consistent column name
-df=frames.to_csv("YoutubeSpamMergedData02.csv")
+df = frames.to_csv("YoutubeSpamMergedData02.csv")
 df = pd.read_csv("YoutubeSpamMergedData02.csv")
 df
 
@@ -196,14 +208,17 @@ df_data = df[['CONTENT','CLASS']]
 # to see those values content =  comments && class = true/false
 df_data
 
-# to see new dataset coluimns
+# to see new dataset columns
 df_data.columns
 
 # inserting data inn x,y for visualization
 df_x = df_data['CONTENT']
 df_y = df_data['CLASS']
 
-"""#Feature Selection"""
+"""# Feature Selection and Extraction
+
+### Feature Selection
+"""
 
 ### Feature Extraction From Text
 
@@ -220,20 +235,23 @@ ex.toarray()
 # gettingh feature name
 cv.get_feature_names()
 
-"""#Feature Extraction and Feature Engineering"""
+"""### Feature Extraction and Feature Engineering"""
 
 # extrat feature with CountVectorizer
 corpus = df_x
 cv = CountVectorizer()
 X = cv.fit_transform(corpus)
 
-# convertingf x to an aray
+# convertingf x to an array
 X.toarray()
 
 # get the feature names
 cv.get_feature_names()
 
-"""#Model Building"""
+"""# Classification
+
+### Model Building
+"""
 
 # module building
 from sklearn.model_selection import train_test_split
@@ -243,27 +261,27 @@ X_train,X_test,y_train,y_test = train_test_split(X,df_y,test_size=0.33,random_st
 
 X_train
 
-"""#Analyzer and apply algorithm"""
+"""### Analyze and apply algorithms."""
 
 from sklearn.neighbors import KNeighborsClassifier,KNeighborsRegressor
-KNNC = KNeighborsClassifier()
+KNNC = KNeighborsClassifier(n_neighbors=101)
 KNNC.fit(X_train,y_train)
 print(f"Train Accuracy of model {KNNC.score(X_train,y_train)*100} %")
-# acuracy of our model
+# acuracy of the model
 print(f"Test Accuracy of model {KNNC.score(X_test,y_test)*100} %")
 
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
-dtc = DecisionTreeClassifier()
+dtc = DecisionTreeClassifier(random_state=101)
 dtc.fit(X_train,y_train)
 print(f"Train Accuracy of model {dtc.score(X_train,y_train)*100} %")
-# acuracy of our model
+# acuracy of the model
 print(f"Test Accuracy of model {dtc.score(X_test,y_test)*100} %")
 
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-Rfc= RandomForestClassifier()
+Rfc= RandomForestClassifier(random_state=101)
 Rfc.fit(X_train,y_train)
 print(f"Train Accuracy of model {Rfc.score(X_train,y_train)*100} %")
-# acuracy of our model
+# acuracy of the model
 print(f"Test Accuracy of model {Rfc.score(X_test,y_test)*100} %")
 
 from sklearn.svm import SVC
@@ -271,7 +289,7 @@ from pandas.core.common import random_state
 svc = SVC(random_state=101)
 svc.fit(X_train,y_train)
 print(f"Train Accuracy of model {svc.score(X_train,y_train)*100} %")
-# acuracy of our model
+# acuracy of the model
 print(f"Test Accuracy of model {svc.score(X_test,y_test)*100} %")
 
 # Naive Bayes Classifire
@@ -279,12 +297,14 @@ from sklearn.naive_bayes import MultinomialNB
 clf = MultinomialNB()
 clf.fit(X_train,y_train)
 print(f"Train Accuracy of model {clf.score(X_train,y_train)*100} %")
-# acuracy of our model
+# acuracy of the model
 print(f"Test Accuracy of model {clf.score(X_test,y_test)*100} %")
 
-"""#Predict & Output
+"""#  Comparison of results
 
-## Confusion Matrix
+## Predict & Output
+
+### Confusion Matrix
 """
 
 from sklearn.metrics import plot_confusion_matrix
@@ -292,11 +312,11 @@ import matplotlib.pyplot as plt
 plot_confusion_matrix(clf,X_test,y_test,cmap='BuPu_r',display_labels=['negative','positive'])
 plt.show()
 
-## predict with our model
+## predict with the model
 clf.predict(X_test)
 
 """
-## Testing"""
+### Testing"""
 
 # a simple prediction 1
 comment = ["Check this out"]
@@ -322,7 +342,7 @@ if clf.predict(vect) == '1':
 else:
     print("Not Spam")
 
-"""##Save The model"""
+"""### Save The model"""
 
 import pickle as pk
 
